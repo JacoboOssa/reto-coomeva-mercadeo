@@ -235,7 +235,7 @@ aws apigateway create-rest-api --name "CoomevaClusterAPI"
 ## Videos Tutoriales
 Agrega aquí los links a los videos explicativos:
 - [Video Agente N8N disparado por un formulario](https://youtu.be/MrhYheFAB_w)
-- [Video Agente N8N integrado con frontend](#)
+- [Video Agente N8N integrado con frontend](https://youtu.be/VKbyi4FUpF4)
 
 
 ---
