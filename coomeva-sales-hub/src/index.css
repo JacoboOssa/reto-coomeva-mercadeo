@@ -1,0 +1,109 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    --background: 0 0% 98%;
+    --foreground: 150 10% 15%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 150 10% 15%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 150 10% 15%;
+
+    /* Verde Coomeva corporativo */
+    --primary: 150 100% 25%;
+    --primary-foreground: 0 0% 100%;
+    
+    /* Verde más claro para hover/accent */
+    --primary-hover: 150 80% 35%;
+
+    --secondary: 150 20% 96%;
+    --secondary-foreground: 150 100% 25%;
+
+    --muted: 150 10% 96%;
+    --muted-foreground: 150 5% 45%;
+
+    --accent: 150 80% 35%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 150 10% 90%;
+    --input: 150 10% 90%;
+    --ring: 150 100% 25%;
+
+    --radius: 0.75rem;
+
+    /* Sombras corporativas */
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+    
+    /* Transiciones */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .dark {
+    --background: 150 15% 8%;
+    --foreground: 0 0% 98%;
+
+    --card: 150 15% 10%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 150 15% 10%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 150 80% 35%;
+    --primary-foreground: 0 0% 100%;
+    
+    --primary-hover: 150 70% 45%;
+
+    --secondary: 150 15% 15%;
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 150 10% 15%;
+    --muted-foreground: 150 5% 65%;
+
+    --accent: 150 80% 35%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 150 15% 20%;
+    --input: 150 15% 20%;
+    --ring: 150 80% 35%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+}
+
+@layer utilities {
+  .transition-smooth {
+    transition: var(--transition-smooth);
+  }
+  
+  .shadow-corporate {
+    box-shadow: var(--shadow-md);
+  }
+  
+  .shadow-corporate-lg {
+    box-shadow: var(--shadow-lg);
+  }
+}
