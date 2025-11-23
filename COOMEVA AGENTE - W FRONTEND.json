@@ -1,0 +1,951 @@
+{
+  "name": "COOMEVA AGENTE - W FRONTEND",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1072,
+        192
+      ],
+      "id": "9436778c-83d4-465c-bc5e-6499e7a4a785",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "Cx68Q15usZrTyjJk",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"arquetipo_y_perfil\": \"Texto que describe el arquetipo y sus características clave.\",\n  \"mensaje\": \"Texto que indica el tipo de mensaje y tono ideal.\",\n  \"idea\": \"Texto breve con la idea principal a transmitir.\",\n  \"canal\": \"Texto que explica el canal recomendado y su justificación.\",\n  \"recomendacion\": \"Texto que resume cómo aplicar todo lo anterior de forma efectiva.\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        1216,
+        192
+      ],
+      "id": "adf3ec3d-423a-4e7d-8ddf-1a40bfc73d62",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "datos",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "idunico",
+              "keyValue": "={{ $json.body.cedula }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        256,
+        -80
+      ],
+      "id": "eebcdd05-98b9-42f2-ba48-d8c69e07b4a6",
+      "name": "OBTENER CLIENTE",
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "JYmT3P0UkujJvCNP",
+          "name": "Supabase account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Arquetipo: {{ $json.Arquetipo }}\nDescripción del perfil: {{ $json[\"Descripción analítica detallada\"] }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "**ROL:**\nEres un Estratega de Marketing Digital y Neuroventas para Coomeva. Tu objetivo es definir el ecosistema de comunicación perfecto para captar a un cliente.\n\n**DATOS DE ENTRADA:**\n- Producto: {{ $('NOMBRE_DEL_NODO_PRODUCTO').item.json.producto }}\n- Arquetipo: {{ $json.Arquetipo }}\n- Descripción: {{ $json[\"Descripción analítica detallada\"] }}\n\n**PROCESO DE RAZONAMIENTO (Brainstorming Estratégico):**\n\n1.  **DIAGNÓSTICO PROFUNDO:**\n    Interpreta al cliente. ¿Qué le mueve? ¿Cómo encaja el producto en su estilo de vida actual?\n\n2.  **ESTRATEGIA DE CANAL (Top Media Platforms):**\n    No te limites a \"Llamada\" o \"Correo\". Analiza el consumo de medios del perfil:\n    *   **Gen Z / Jóvenes (<30):** Viven en **TikTok, Instagram Stories y WhatsApp**. Ignoran llamadas. El abordaje debe ser visual y rápido.\n    *   **Millennials / Profesionales (30-45):** Usan **LinkedIn, Twitter (X), Email y WhatsApp**. Valoran la información experta y el respeto al tiempo.\n    *   **Gen X / Mayores (>45):** Usan **Facebook, Estados de WhatsApp y SMS**. Valoran la cercanía y la llamada telefónica para cerrar.\n    *   *Acción:* Define un MIX de canales (Primario y Secundario) que maximice la visibilidad.\n\n3.  **DISEÑO DEL MENSAJE E IDEA:**\n    *   **Idea:** El beneficio emocional (Tranquilidad, Logro, Libertad).\n    *   **Mensaje:** Adapta el copy al canal. Si sugieres Instagram/WhatsApp, el mensaje debe ser corto, visual y con emojis estratégicos.\n\n4.  **RECOMENDACIÓN TÁCTICA:**\n    Dile al vendedor cómo ejecutar la omnicanalidad. (Ej: \"Interactúa con su contenido en redes antes de escribirle\" o \"Usa los Estados de WhatsApp para atraerlo indirectamente\").\n\n**TAREA:**\nGenera el JSON de salida. En el campo \"canal\", sé específico con las plataformas (Ej: no digas \"Redes\", di \"Instagram Reels\" o \"LinkedIn InMail\")."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        1072,
+        0
+      ],
+      "id": "6da53634-f131-45e9-a1a1-7c2edbf187cf",
+      "name": "PROCESAR RECOMENDACIONES",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "content": "# Caso de uso: \n## En caso de que el usuario desde la interfaz de usuario seleccione buscar por cedula, el agente va redireccionar a esta ruta donde se le va devolver una idea, un canal y el perfil. Existe un manejo de error en caso que suceda algo con la base de datos. ",
+        "height": 656,
+        "width": 1568
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        144,
+        -320
+      ],
+      "typeVersion": 1,
+      "id": "b0fea25b-d110-4435-ac48-930644bb5159",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1Ntj5tHXHkVnJYUOw6w5vORiX1xy57jaAC36LnY9XdnI",
+          "mode": "list",
+          "cachedResultName": "cluster_arquetipos_precisos_con_riesgo",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Ntj5tHXHkVnJYUOw6w5vORiX1xy57jaAC36LnY9XdnI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Ntj5tHXHkVnJYUOw6w5vORiX1xy57jaAC36LnY9XdnI/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Cluster",
+              "lookupValue": "={{ $('OBTENER CLIENTE').item.json.cluster }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        864,
+        0
+      ],
+      "id": "569f42ee-30aa-40fc-8e3b-b7c1d4496060",
+      "name": "OBTENER ARQUETIPOS Y PERFILES",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "R0QGHrUAsWbjP1Zs",
+          "name": "Google Sheets account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        1392,
+        -128
+      ],
+      "id": "e6f29f14-f3e1-4cc0-bdfb-194609636316",
+      "name": "RESPONDER CON RECOMENDACIÓN",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "e0d3199e-1b27-4ee7-8787-56f7e0ef680f",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "*",
+          "rawBody": true
+        }
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -512,
+        800
+      ],
+      "id": "b44eb689-a62f-4c9e-b75b-03c9f235893c",
+      "name": "ESCUCHAR UI",
+      "webhookId": "e0d3199e-1b27-4ee7-8787-56f7e0ef680f",
+      "alwaysOutputData": false,
+      "executeOnce": false,
+      "retryOnFail": false,
+      "notesInFlow": false
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://t961z2orbe.execute-api.us-east-1.amazonaws.com/api/v1/cluster",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "parameterType": "formBinaryData",
+              "name": "file",
+              "inputDataFieldName": "file"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        240,
+        672
+      ],
+      "id": "9a2fb0d1-fdd2-4aab-aaff-574de9a0b18f",
+      "name": "CLUSTERIZAR NUEVOS CLIENTES",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://fqkclmjpcludtrifrpok.supabase.co/rest/v1/datos",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "{\n  \"apikey\":\n  \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZxa2NsbWpwY2x1ZHRyaWZycG9rIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2MTg1MzI2NywiZXhwIjoyMDc3NDI5MjY3fQ.RpgwHTX3AgA4im8k2k_sC1gYqm5MaHrdXuSP7Eha_XM\",\n  \"Authorization\": \"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZxa2NsbWpwY2x1ZHRyaWZycG9rIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2MTg1MzI2NywiZXhwIjoyMDc3NDI5MjY3fQ.RpgwHTX3AgA4im8k2k_sC1gYqm5MaHrdXuSP7Eha_XM\",\n  \"Content-Type\": \"text/csv\",\n  \"Prefer\": \"return=minimal\"\n}\n",
+        "sendBody": true,
+        "contentType": "binaryData",
+        "inputDataFieldName": "data",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        720,
+        832
+      ],
+      "id": "0f27e006-b416-43cb-b1fb-22d1dc7eb5da",
+      "name": "AÑADIR A LA DB",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n  \"success\": false,\n  \"message\": \"Ocurrió un error, inténtalo de nuevo.\"\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        656,
+        -144
+      ],
+      "id": "c4b373ae-5070-4417-8453-e7af44415062",
+      "name": "PROPAGAR ERROR"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n  \"success\": true,\n  \"message\": \"Operación completada correctamente.\"\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        656,
+        0
+      ],
+      "id": "15bb2b75-29f0-4edc-8e12-c61def0f0b02",
+      "name": "AÑADIR CAMPO DE OPERACIÒN EXITOSA"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n  \"success\": false,\n  \"message\": \"Ocurrió un error corriendo el modelo de clusterización.\"\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        784,
+        592
+      ],
+      "id": "caca2d2e-a01f-4c7a-9e2a-ffe5ddea698d",
+      "name": "PROPAGAR ERROR1"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        1392,
+        592
+      ],
+      "id": "3ffb739b-7ef3-4360-9e51-dc2029d34a85",
+      "name": "RESPONDER CON RECOMENDACIÓN1",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cb522d1d-f763-4a17-bc0d-6c25b28a2921",
+              "leftValue": "={{ Object.keys($json).length === 0 }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        448,
+        -96
+      ],
+      "id": "d79f49e7-c726-4773-a269-8a5df1df049f",
+      "name": "EXISTE ALGUN ERROR?"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "f94d38c7-d1d5-44f4-ac44-cf62f600d335",
+              "leftValue": "={{ JSON.stringify($json.error) }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        528,
+        672
+      ],
+      "id": "aea3c91a-fb8f-442d-96eb-76cfcb64657e",
+      "name": "EXISTE ERROR DE AWS LAMBDA?"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cb522d1d-f763-4a17-bc0d-6c25b28a2921",
+              "leftValue": "={{ JSON.stringify($json.error) }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        960,
+        832
+      ],
+      "id": "224a60fe-0aa3-4973-a742-708d0aed1239",
+      "name": "EXISTE ALGUN ERROR?1"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n  \"success\": false,\n  \"message\": \"Ocurrió un error insertando los nuevos clientes a la base de datos.\"\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1200,
+        688
+      ],
+      "id": "05f1421a-629d-4162-b750-3d624b4e67a4",
+      "name": "PROPAGAR ERROR2"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n  \"success\": true,\n  \"message\": \"Operación completada correctamente.\"\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1184,
+        864
+      ],
+      "id": "226c7213-0b16-4261-ac05-8b7fce469794",
+      "name": "AÑADIR CAMPO DE OPERACIÒN EXITOSA1"
+    },
+    {
+      "parameters": {
+        "content": "# Caso de uso: \n## En caso de que el usuario desde la interfaz de usuario seleccione clusterizar clientes, el agente va redireccionar a esta ruta donde va llamar a la funcion serverless para clusterizar los N clientes que ingresaron para luego añadirlos a la base de datos.",
+        "height": 672,
+        "width": 1584,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        144,
+        368
+      ],
+      "typeVersion": 1,
+      "id": "156e02b6-a2a6-42b0-8bc7-aeef31182350",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "# Trigger o disparador:\n## Es un agente que va estar siempre escuchando de la interfaz de usuario 'Que debe hacer'. El disparador webhook es un nodo que va estar atento a la decision del usuario. ",
+        "height": 432,
+        "width": 528,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -624,
+        560
+      ],
+      "typeVersion": 1,
+      "id": "9818ab0d-c1a2-4ea2-a5ea-883848994829",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.body.opcion }}",
+                    "rightValue": "1",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "728c5740-7ee3-4b60-b348-d60145de11a0"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "160b46e6-44cc-4d8c-865b-a3d0176cafb8",
+                    "leftValue": "={{ $json.body.opcion }}",
+                    "rightValue": "2",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "01d0d8c0-2279-4cdd-a3e8-799cb12fe64e",
+                    "leftValue": "={{ $json.body.opcion }}",
+                    "rightValue": "3",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        -256,
+        784
+      ],
+      "id": "6523a408-7552-4a37-8de9-b6bd7745e15b",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1kVJEb8wmAoWT-GOkvvMOMpzRKcYBY_R2ERzCWn4zoA0",
+          "mode": "list",
+          "cachedResultName": "cluster_arquetipos_precisos_con_riesgo",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1kVJEb8wmAoWT-GOkvvMOMpzRKcYBY_R2ERzCWn4zoA0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1kVJEb8wmAoWT-GOkvvMOMpzRKcYBY_R2ERzCWn4zoA0/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Arquetipo",
+              "lookupValue": "={{ $json.body.arquetipo }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        240,
+        1328
+      ],
+      "id": "395c78a7-3db7-49d2-8f74-a6d936c1d30e",
+      "name": "OBTENER ARQUETIPOS Y PERFILES1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "R0QGHrUAsWbjP1Zs",
+          "name": "Google Sheets account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=**ROL:**\nEres un Estratega Comercial Senior y experto en Marketing Omnicanal para Coomeva.\n\n**TAREA:**\nAnaliza los datos del cliente y el producto para generar una estrategia de abordaje multi-canal.\n\n**DATOS DE ENTRADA:**\n- Producto Objetivo: {{ $('ESCUCHAR UI').item.json.body.producto }}\n- Perfil Arquetipo: {{ $json.Arquetipo }}\n- Descripción: {{ $json['Descripción analítica detallada'] }}\n- Edad: {{ $json.Edad }}\n- Ingresos: {{ $json.Ingresos }}\n- Personas a Cargo: {{ $json.personas_a_cargo }}\n- Riesgo Crediticio: {{ $json.Riesgo_crediticio }}\n- Cuotas en Mora: {{ $json.cuotas_mora_aportes }}\n\n**REGLAS DE RAZONAMIENTO (Lógica de Negocio):**\n1. SI (Cuotas Mora > 0 O Riesgo == 'Alto') Y (Producto == 'Crédito'): Estrategia de saneamiento/ayuda. Tono conciliador.\n2. SI (Personas a Cargo > 0): Argumentos sobre \"familia/futuro\".\n3. SI (Edad < 35): Nativos Digitales. Prioriza **Instagram Stories, TikTok, WhatsApp, DM de Twitter**. Odian las llamadas en frío.\n4. SI (Edad 35-50): Generación X/Millennials mayores. Prioriza **LinkedIn (si es perfil alto), Email, WhatsApp, Facebook**.\n5. SI (Edad > 50): Tradicionales. Prioriza **Llamada, SMS, Facebook, Correo**.\n6. **Top Media Platforms:** Basa tu selección de canales en la edad. Sé específico (ej: no digas \"Redes\", di \"Instagram Reels\" o \"Estado de WhatsApp\").\n\n**EJEMPLOS DE ENTRENAMIENTO (FEW-SHOT):**\n\nUSER INPUT: Producto: \"Tarjeta de Crédito\" | Datos: Edad 53, Riesgo Alto, Mora 5.\nAI OUTPUT:\n{\n  \"match_producto_perfil\": {\n    \"score_afinidad\": 3,\n    \"analisis_viabilidad\": \"Baja. Prioridad: Saneamiento.\",\n    \"angulo_venta\": \"Recuperación de tranquilidad\"\n  },\n  \"estrategia_comunicacion\": {\n    \"canales_sugeridos\": [\"Llamada Telefónica\", \"Mensaje de Texto (SMS)\", \"Correo Electrónico\"],\n    \"justificacion_medios\": \"Por su edad y la situación de mora, requiere canales privados y tradicionales. Las redes sociales serían invasivas para cobrar.\",\n    \"mejor_momento\": \"Tarde\",\n    \"tono_voz\": \"Empático\"\n  },\n  \"kit_ventas\": {\n    \"mensaje_whatsapp_o_asunto\": \"Coomeva: Opciones para tu tranquilidad\",\n    \"argumento_apertura\": \"Queremos revisar opciones para poner al día tus obligaciones.\",\n    \"argumento_cierre\": \"Hablemos hoy.\"\n  },\n  \"manejo_resistencias\": {\n    \"posible_objecion\": \"No tengo dinero.\",\n    \"respuesta_inteligente\": \"Buscamos acuerdo, no pago total inmediato.\"\n  }\n}\n\nUSER INPUT: Producto: \"Crédito de Vivienda\" | Datos: Edad 26, Ingresos Altos, Sin Mora.\nAI OUTPUT:\n{\n  \"match_producto_perfil\": {\n    \"score_afinidad\": 10,\n    \"analisis_viabilidad\": \"Excelente. Momento ideal de expansión.\",\n    \"angulo_venta\": \"Independencia y Estilo de Vida\"\n  },\n  \"estrategia_comunicacion\": {\n    \"canales_sugeridos\": [\"WhatsApp\", \"Instagram Stories (Ads)\", \"TikTok (Contenido educativo)\", \"Email Interactivo\"],\n    \"justificacion_medios\": \"Nativo digital total. Consume contenido visual corto (TikTok/Reels) y gestiona su vida por WhatsApp. Ignora llamadas desconocidas.\",\n    \"mejor_momento\": \"Noche (Scroll infinito)\",\n    \"tono_voz\": \"Desafiante y Visual\"\n  },\n  \"kit_ventas\": {\n    \"mensaje_whatsapp_o_asunto\": \"🏠 ¿Sigues pagando arriendo? Mira esto.\",\n    \"argumento_apertura\": \"Con lo que pagas de arriendo, ya tendrías tu propio espacio. Te paso una simulación rápida al cel.\",\n    \"argumento_cierre\": \"Agenda tu visita virtual.\"\n  },\n  \"manejo_resistencias\": {\n    \"posible_objecion\": \"Me da miedo endeudarme joven.\",\n    \"respuesta_inteligente\": \"Es la única deuda buena: la que construye tu patrimonio y se paga sola si decides rentarlo luego.\"\n  }\n}\n\n**TU TURNO:**\nGenera el JSON para los datos proporcionados.",
+        "hasOutputParser": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        512,
+        1312
+      ],
+      "id": "1a162a4e-217d-4bf5-bdb8-4247e7639287",
+      "name": "AI Agent",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        512,
+        1568
+      ],
+      "id": "fbd3f340-c817-4ef9-b857-318ed3767a4b",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "Cx68Q15usZrTyjJk",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"match_producto_perfil\": {\n    \"score_afinidad\": 10,\n    \"analisis_viabilidad\": \"Excelente. Momento ideal de expansión.\",\n    \"angulo_venta\": \"Independencia y Estilo de Vida\"\n  },\n  \"estrategia_comunicacion\": {\n    \"canales_sugeridos\": [\"WhatsApp\", \"Instagram Stories (Ads)\", \"TikTok (Contenido educativo)\", \"Email Interactivo\"],\n    \"justificacion_medios\": \"Nativo digital total. Consume contenido visual corto (TikTok/Reels) y gestiona su vida por WhatsApp. Ignora llamadas desconocidas.\",\n    \"mejor_momento\": \"Noche (Scroll infinito)\",\n    \"tono_voz\": \"Desafiante y Visual\"\n  },\n  \"kit_ventas\": {\n    \"mensaje_whatsapp_o_asunto\": \"🏠 ¿Sigues pagando arriendo? Mira esto.\",\n    \"argumento_apertura\": \"Con lo que pagas de arriendo, ya tendrías tu propio espacio. Te paso una simulación rápida al cel.\",\n    \"argumento_cierre\": \"Agenda tu visita virtual.\"\n  },\n  \"manejo_resistencias\": {\n    \"posible_objecion\": \"Me da miedo endeudarme joven.\",\n    \"respuesta_inteligente\": \"Es la única deuda buena: la que construye tu patrimonio y se paga sola si decides rentarlo luego.\"\n  }\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        704,
+        1568
+      ],
+      "id": "7665f5bb-b687-492f-89b4-0bb4aa74b2e8",
+      "name": "Structured Output Parser1"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json.output }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        928,
+        1328
+      ],
+      "id": "08851261-a346-4fa4-a653-faab74e4a588",
+      "name": "RESPONDER CON RECOMENDACIÓN2",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "content": "",
+        "height": 672,
+        "width": 1584,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        144,
+        1072
+      ],
+      "typeVersion": 1,
+      "id": "5b09b8dc-b646-4cb4-815c-d3520d7f20b3",
+      "name": "Sticky Note3"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "PROCESAR RECOMENDACIONES",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "PROCESAR RECOMENDACIONES",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OBTENER CLIENTE": {
+      "main": [
+        [
+          {
+            "node": "EXISTE ALGUN ERROR?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PROCESAR RECOMENDACIONES": {
+      "main": [
+        [
+          {
+            "node": "RESPONDER CON RECOMENDACIÓN",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OBTENER ARQUETIPOS Y PERFILES": {
+      "main": [
+        [
+          {
+            "node": "PROCESAR RECOMENDACIONES",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ESCUCHAR UI": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CLUSTERIZAR NUEVOS CLIENTES": {
+      "main": [
+        [
+          {
+            "node": "EXISTE ERROR DE AWS LAMBDA?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AÑADIR A LA DB": {
+      "main": [
+        [
+          {
+            "node": "EXISTE ALGUN ERROR?1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AÑADIR CAMPO DE OPERACIÒN EXITOSA": {
+      "main": [
+        [
+          {
+            "node": "OBTENER ARQUETIPOS Y PERFILES",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PROPAGAR ERROR": {
+      "main": [
+        [
+          {
+            "node": "RESPONDER CON RECOMENDACIÓN",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PROPAGAR ERROR1": {
+      "main": [
+        [
+          {
+            "node": "RESPONDER CON RECOMENDACIÓN1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "EXISTE ALGUN ERROR?": {
+      "main": [
+        [
+          {
+            "node": "PROPAGAR ERROR",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "AÑADIR CAMPO DE OPERACIÒN EXITOSA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "EXISTE ERROR DE AWS LAMBDA?": {
+      "main": [
+        [
+          {
+            "node": "PROPAGAR ERROR1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "AÑADIR A LA DB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "EXISTE ALGUN ERROR?1": {
+      "main": [
+        [
+          {
+            "node": "PROPAGAR ERROR2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "AÑADIR CAMPO DE OPERACIÒN EXITOSA1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PROPAGAR ERROR2": {
+      "main": [
+        [
+          {
+            "node": "RESPONDER CON RECOMENDACIÓN1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AÑADIR CAMPO DE OPERACIÒN EXITOSA1": {
+      "main": [
+        [
+          {
+            "node": "RESPONDER CON RECOMENDACIÓN1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "OBTENER CLIENTE",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "CLUSTERIZAR NUEVOS CLIENTES",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "OBTENER ARQUETIPOS Y PERFILES1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OBTENER ARQUETIPOS Y PERFILES1": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser1": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "RESPONDER CON RECOMENDACIÓN2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "95119242-8fa2-4258-93b8-4c069e50cb6a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "5f10eee159f3cd170fac47440411e669e7973a82eee12bc3dedff3c81c35530c"
+  },
+  "id": "4x62gzFTeyrpun0H",
+  "tags": []
+}
